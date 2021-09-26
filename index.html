@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        font-size: 8vw;
+        font-family: 'JetBrains Mono', monospace;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('./background_blur.png');
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-shadow: 3px 3px 3px #000000;
+      }
+
+      button {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        padding: 15px;
+        background-color: transparent;
+        border-radius: 4px;
+        outline: none;
+        font-size: large;
+        cursor: pointer;
+        border-color: #465b75;
+        color: #5d7a9e;
+      }
+
+      .time {
+        overflow: hidden;
+      }
+
+      .background {
+        position: absolute;
+        width: 70vh;
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: -1;
+      }
+
+      .symbol1,
+      .symbol2 {
+        position: absolute;
+        filter: blur(3px);
+      }
+
+      .symbol1 {
+        height: 90%;
+        animation: rotate 40s linear infinite;
+        border-radius: 50%;
+      }
+
+      .symbol2 {
+        height: 65%;
+        animation: rotate 30s linear infinite reverse;
+        border-radius: 50%;
+      }
+
+      @keyframes rotate {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <div id="app">
+      <div class="text">Перерыв</div>
+      <div class="time"></div>
+      <button class="settings">Settings</button>
+    </div>
+    <div class="background">
+      <img class="symbol1" src="./symbol.svg" />
+    </div>
+    <script>
+      const $text = document.querySelector('.text');
+      const $time = document.querySelector('.time');
+      const $settings = document.querySelector('.settings');
+      let timer = null;
+
+      $settings.addEventListener('click', () => {
+        const text = prompt('text');
+        const minutes = prompt('minutes');
+
+        $text.textContent = text;
+
+        const start = Date.now();
+        const end = Date.now() + minutes * 60 * 1000;
+        let difference = (end - start) / 1000;
+
+        if (timer !== null) {
+          clearInterval(timer);
+        }
+
+        timer = setInterval(() => {
+          difference--;
+          let h = Math.floor((difference / 60 / 60) % 24);
+          let m = Math.floor((difference / 60) % 60);
+          let s = Math.floor(difference % 60);
+
+          if (difference < 0) {
+            clearInterval(timer);
+            $text.textContent = '';
+          }
+
+          h = String(h).length === 1 ? '0' + String(h) : h;
+          m = String(m).length === 1 ? '0' + String(m) : m;
+          s = String(s).length === 1 ? '0' + String(s) : s;
+          $time.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
